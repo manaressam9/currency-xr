@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
-
+import coin from './coin.svg';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="grad-bg text-white ">
+      <div className="container mt-5 pt-5 text-white text-center">
+        <h1>
+          {' '}
+          Realtime Currency-XR <br /> Converter Application
+        </h1>
+      </div>
+      <div>
+        <div className="animated-coins">
+          <img src={coin} alt="coin" />
+        </div>
+        <div className="animated-coins">
+          <img src={coin} alt="coin" />
+        </div>
+        <div className="animated-coins">
+          <img src={coin} alt="coin" />
+        </div>
+        <div className="animated-coins">
+          <img src={coin} alt="coin" />
+        </div>
+        <div className="animated-coins">
+          <img src={coin} alt="coin" />
+        </div>
+      </div>
     </div>
   );
 }

@@ -11,3 +11,70 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/*app container*/
+.grad-bg {
+  background: linear-gradient(132deg, #b941dd, #591bc5, #212335);
+  animation: Gradient 10s ease infinite;
+  background-size: 300% 100%;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+@keyframes Gradient {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+/*animated coins*/
+.animated-coins {
+  position: absolute;
+  top: 80vh;
+  left: 45vw;
+  width: 10px;
+  height: 10px;
+
+  transform-origin: top left;
+  transform: scale(0) translate(-50%, -50%);
+  animation: animated-coins 12s ease-in forwards infinite;
+}
+.animated-coins:nth-child(1) {
+  animation-delay: 2s;
+  left: 25vw;
+  top: 40vh;
+}
+.animated-coins:nth-child(2) {
+  animation-delay: 4s;
+  left: 75vw;
+  top: 50vh;
+}
+.animated-coins:nth-child(3) {
+  animation-delay: 6s;
+  left: 90vw;
+  top: 10vh;
+}
+.animated-coins:nth-child(4) {
+  animation-delay: 8s;
+  left: 10vw;
+  top: 85vh;
+}
+.animated-coins:nth-child(5) {
+  animation-delay: 10s;
+  left: 50vw;
+  top: 10vh;
+}
+@keyframes animated-coins {
+  from {
+    transform: scale(0) translate(-50%, -50%);
+    opacity: 1;
+  }
+  to {
+    transform: scale(10) translate(-50%, -50%);
+    opacity: 0;
+  }
+}
