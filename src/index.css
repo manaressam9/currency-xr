@@ -11,7 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-/*app container*/
+/*app container Body*/
 .grad-bg {
   background: linear-gradient(132deg, #b941dd, #591bc5, #212335);
   animation: Gradient 10s ease infinite;
@@ -77,4 +77,15 @@ code {
     transform: scale(10) translate(-50%, -50%);
     opacity: 0;
   }
+}
+/*currency converter*/
+.curr-conv {
+  padding: 8px 0px 8px;
+  box-shadow: 0 10px 15px -5px rgb(15, 6, 31);
+  background-color: rgb(84, 18, 197);
+}
+.curr-conv input:focus,
+.curr-conv select:focus {
+  outline: none;
+  box-shadow: none;
 }
