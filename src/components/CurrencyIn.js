@@ -9,6 +9,7 @@ function CurrencyIn(props) {
           type="text"
           aria-label="amount of money"
           value={props.amount}
+          onChange={(event) => props.amountHandler(event.target.value)}
         ></input>
       </div>
       <div className="col-lg-4 col-md-6 mb-3 ">
@@ -16,6 +17,7 @@ function CurrencyIn(props) {
           className="form-select rounded-pill"
           aria-label="select currency"
           value={props.currency}
+          onChange={(event) => props.currencyHandler(event.target.value)}
         >
           {' '}
           {props.currencies.map((curr) => (
