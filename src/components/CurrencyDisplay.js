@@ -68,10 +68,15 @@ function CurrencyDisplay() {
   return (
     <>
       {/* Display available currencies and their XRates */}
-      <div className="container mt-5">
+      <div className="container mt-3">
         <div className="row">
           <div className="col-lg-4 col-md-2"></div>
           <div className="col-lg-4  col-md-8  curr-display  ">
+            <h6>
+              {' '}
+              <i className="bi bi-1-circle-fill text-warning"></i> Available
+              Currencies{' '}
+            </h6>
             <div className="input-group  ">
               <select
                 className="form-select "
