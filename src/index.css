@@ -11,14 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-/*app container Body*/
+/*animated bg*/
 .grad-bg {
   background: linear-gradient(132deg, #b941dd, #591bc5, #212335);
   animation: Gradient 10s ease infinite;
   background-size: 300% 100%;
   position: relative;
   height: 100vh;
+  width: 100%;
   overflow: hidden;
+  z-index: -1;
 }
 @keyframes Gradient {
   0% {
@@ -31,6 +33,15 @@ code {
     background-position: 0% 50%;
   }
 }
+/* application body*/
+.app-body {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
 /*animated coins*/
 .animated-coins {
   position: absolute;
@@ -38,32 +49,31 @@ code {
   left: 45vw;
   width: 10px;
   height: 10px;
-
   transform-origin: top left;
   transform: scale(0) translate(-50%, -50%);
   animation: animated-coins 12s ease-in forwards infinite;
 }
-.animated-coins:nth-child(1) {
+.animated-coins:nth-child(2) {
   animation-delay: 2s;
   left: 25vw;
   top: 40vh;
 }
-.animated-coins:nth-child(2) {
+.animated-coins:nth-child(3) {
   animation-delay: 4s;
   left: 75vw;
   top: 50vh;
 }
-.animated-coins:nth-child(3) {
+.animated-coins:nth-child(4) {
   animation-delay: 6s;
   left: 90vw;
   top: 10vh;
 }
-.animated-coins:nth-child(4) {
+.animated-coins:nth-child(5) {
   animation-delay: 8s;
   left: 10vw;
   top: 85vh;
 }
-.animated-coins:nth-child(5) {
+.animated-coins:nth-child(6) {
   animation-delay: 10s;
   left: 50vw;
   top: 10vh;
@@ -85,7 +95,19 @@ code {
   background-color: rgb(84, 18, 197);
 }
 .curr-conv input:focus,
-.curr-conv select:focus {
+.curr-conv select:focus,
+.curr-display select:focus {
   outline: none;
   box-shadow: none;
+}
+.input-group {
+  box-shadow: 0 10px 15px -5px rgb(15, 6, 31, 0.3);
+}
+.dropdown-menu {
+  max-height: calc(60vh - 150px);
+  overflow-y: scroll;
+}
+.dropdown-toggle {
+  color: white;
+  background-color: rgb(84, 18, 197);
 }

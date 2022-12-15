@@ -51,10 +51,10 @@ function CurrencyConvert(props) {
     setCurr2(currency2);
   };
   return (
-    <div className="container pt-5">
+    <div className="container pt-2">
       <div className="row ">
-        <div className="col-lg-4 col-md-4"></div>
-        <div className="col-lg-4 col-md-4 curr-conv rounded-5 pt-3">
+        <div className="col-lg-3 col-md-2"></div>
+        <div className="col-lg-6 col-md-8 curr-conv rounded-5 pt-3">
           <h4>Currency Converter</h4>
           <div className="row p-3">
             <CurrencyIn
@@ -73,7 +73,7 @@ function CurrencyConvert(props) {
             />
           </div>
         </div>
-        <div className="col-lg-4 col-md-4 "></div>
+        <div className="col-lg-3 col-md-8 "></div>
       </div>
     </div>
   );
