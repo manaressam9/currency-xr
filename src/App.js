@@ -1,7 +1,5 @@
 import AnimatedBg from './components/AnimatedBg';
-import CurrencyConvert from './components/CurrencyConvert';
 import CurrencyDisplay from './components/CurrencyDisplay';
-import FavCurr from './components/FavCurr';
 function App() {
   return (
     <div className=" text-white text-center ">
@@ -11,8 +9,6 @@ function App() {
           Realtime Currency-XR <br /> Converter Application
         </h1>
         <CurrencyDisplay />
-        <CurrencyConvert />
-        <FavCurr />
       </div>
     </div>
   );

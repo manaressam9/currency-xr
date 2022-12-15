@@ -1,28 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-function FavCurr() {
-  // Sample options for dropdown
-
-  const [favCurr, setFavCurr] = useState([]);
-  useEffect(() => {
-    displayCurrencies();
-  }, []);
-
-  const displayCurrencies = async () => {
-    const res = await axios.get(
-      'https://api.apilayer.com/exchangerates_data/latest?base=EGP&apikey=8yAnIRDjLmmjrwTjvwkMjURWC6eJTNkw'
-    );
-    const { rates } = res.data;
-
-    const ratesArr = [];
-    for (const [symbol, rate] of Object.entries(rates)) {
-      ratesArr.push({ symbol, rate });
-    }
-    setFavCurr(ratesArr);
-  };
-  // console.log({ favCurr });
+function FavCurr(props) {
   return (
     <div className="container mt-5">
       <div className="row">
@@ -34,7 +13,7 @@ function FavCurr() {
             List
           </h5>
           <Autocomplete
-            options={favCurr.map((curr) => curr.symbol)}
+            options={props.favCurr.map((curr) => curr.symbol)}
             multiple
             getOptionLabel={(option) => option}
             renderInput={(params) => (
