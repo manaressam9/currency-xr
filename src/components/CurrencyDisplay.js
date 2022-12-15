@@ -49,10 +49,10 @@ function CurrencyDisplay() {
             </select>
             <button
               type="button"
-              class="btn  dropdown-toggle "
+              className="btn  dropdown-toggle "
               data-bs-toggle="dropdown"
             >
-              <i class="bi bi-currency-exchange text-warning px-1"></i>
+              <i className="bi bi-currency-exchange text-warning "></i>
               Exchange Rates
             </button>
             <ul className="dropdown-menu">

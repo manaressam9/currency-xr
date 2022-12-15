@@ -4,9 +4,9 @@ import CurrencyIn from './CurrencyIn';
 
 function CurrencyConvert(props) {
   const [amount1, setAmount1] = useState(1);
-  const [currency1, setCurr1] = useState('EGP');
+  const [currency1, setCurr1] = useState('USD');
   const [amount2, setAmount2] = useState(1);
-  const [currency2, setCurr2] = useState('USD');
+  const [currency2, setCurr2] = useState('EGP');
   const [xRates, setXR] = useState([]);
   //to fetch the currencies from exchangerates.io currecncy API when the app loads
   useEffect(() => {
