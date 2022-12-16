@@ -20,7 +20,7 @@ function CurrencyDisplay() {
 
   const displayCurrencies = async (base) => {
     const res = await axios.get(
-      ` https://api.apilayer.com/exchangerates_data/latest?base=${base}&apikey=8yAnIRDjLmmjrwTjvwkMjURWC6eJTNkw`
+      ` https://api.apilayer.com/exchangerates_data/latest?base=${base}&apikey=jcIiz6KRv6hYsTkQcxV4EXvcGRIIbwkI`
     );
     const { rates } = res.data;
 
