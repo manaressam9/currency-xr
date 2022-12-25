@@ -12,7 +12,6 @@
 > - ability to create <b> favourite currency list </b>  
 
 <h5>  :sparkles: Demo </h5>
-<a href="https://silly-gingersnap-1fc3f0.netlify.app/"> https://currencyXR-converter.com </a>
 <br />
 
 > https://user-images.githubusercontent.com/47770516/208007110-01864782-400d-4039-ad6e-bcbc25a92930.mp4
