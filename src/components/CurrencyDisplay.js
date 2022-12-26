@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import CurrencyConvert from './CurrencyConvert';
 import FavCurr from './FavCurr';
@@ -13,12 +13,49 @@ function CurrencyDisplay() {
   const [amount2, setAmount2] = useState(1);
   const [currency2, setCurr2] = useState('EGP');
   const [xRates, setXR] = useState([]);
-  /*Fav Curr vars*/
-  useEffect(() => {
-    displayCurrencies('EGP');
-  }, []);
 
-  const displayCurrencies = async (base) => {
+  const displayCurrencies = useCallback(async () => {
+    const res = await axios.get(
+      `https://api.apilayer.com/fixer/latest?base=${baseCurr}&apikey=8yAnIRDjLmmjrwTjvwkMjURWC6eJTNkw`
+    );
+    const { rates } = res.data;
+
+    const ratesArr = [];
+    for (const [symbol, rate] of Object.entries(rates)) {
+      ratesArr.push({ symbol, rate });
+    }
+    setXR(res.data.rates);
+    setRatesList(ratesArr);
+    setDate(res.data.date);
+  }, [baseCurr]);
+
+  useEffect(() => {
+    displayCurrencies();
+    console.log('1st api call effect');
+  }, [displayCurrencies]);
+
+  useEffect(() => {
+    console.log(' 2nd interval effect');
+    const interval = setInterval(() => {
+      const UpdatedR1 = ratesList.map((obj) => {
+        if (obj.rate === 1) {
+          return { symbol: obj.symbol, rate: obj.rate };
+        } else {
+          return {
+            symbol: obj.symbol,
+            rate: obj.rate + Math.random() * (0.05 - 0.01) + 0.01,
+          };
+        }
+      });
+
+      setRatesList(UpdatedR1);
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [ratesList]);
+  /*async (base) => {
     const res = await axios.get(
       ` https://api.apilayer.com/exchangerates_data/latest?base=${base}&apikey=jcIiz6KRv6hYsTkQcxV4EXvcGRIIbwkI`
     );
@@ -31,7 +68,7 @@ function CurrencyDisplay() {
     setXR(res.data.rates);
     setRatesList(ratesArr);
     setDate(res.data.date);
-  };
+  };*/
   /* Currency Converter Logic */
   /* to calculate the amount2 value wrt the base currency */
   useEffect(() => {
@@ -85,7 +122,7 @@ function CurrencyDisplay() {
                 onChange={(event) => {
                   const value = event.target.value;
                   setBaseCurr(value);
-                  displayCurrencies(value);
+                  displayCurrencies();
                 }}
               >
                 {ratesList.map((curr) => (

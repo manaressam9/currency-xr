@@ -1,5 +1,6 @@
 import AnimatedBg from './components/AnimatedBg';
 import CurrencyDisplay from './components/CurrencyDisplay';
+//import TryThis from './components/TryThis';
 function App() {
   return (
     <div className=" text-white text-center ">
@@ -30,6 +31,7 @@ function App() {
           </div>
         </div>
       </div>
+      {/*  <TryThis />*/}
     </div>
   );
 }
