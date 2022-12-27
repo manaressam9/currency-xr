@@ -2,11 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import CurrencyConvert from './CurrencyConvert';
 import FavCurr from './FavCurr';
+//import Timer from './Timer';
 function CurrencyDisplay() {
   /*Curr Display vars */
   const [ratesList, setRatesList] = useState([]);
   const [baseCurr, setBaseCurr] = useState('EGP');
   const [date, setDate] = useState('');
+  const [timer, setTimer] = useState(5);
   /*Curr Convert vars */
   const [amount1, setAmount1] = useState(1);
   const [currency1, setCurr1] = useState('USD');
@@ -49,12 +51,29 @@ function CurrencyDisplay() {
       });
 
       setRatesList(UpdatedR1);
-    }, 5000);
+    }, 6000);
 
     return () => {
       clearInterval(interval);
     };
   }, [ratesList]);
+
+  useEffect(() => {
+    console.log('3rd timer call effect');
+
+    if (ratesList.length === 0) {
+      console.log(ratesList);
+    } else {
+      const interval = setInterval(() => {
+        timer === 0 ? setTimer(5) : setTimer(timer - 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [timer, ratesList]);
+
   /*async (base) => {
     const res = await axios.get(
       ` https://api.apilayer.com/exchangerates_data/latest?base=${base}&apikey=jcIiz6KRv6hYsTkQcxV4EXvcGRIIbwkI`
@@ -149,8 +168,13 @@ function CurrencyDisplay() {
                 ))}
               </ul>
             </div>
-            <p>
-              <small>Last Updated: {date} </small>
+
+            <p className="pt-2">
+              {' '}
+              Last Update : {date} In{' '}
+              <span class="badge bg-light text-dark rounded-circle">
+                {timer}
+              </span>
             </p>
           </div>
           <div className="col-lg-4 col-md-2"> </div>

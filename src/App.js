@@ -1,9 +1,10 @@
 import AnimatedBg from './components/AnimatedBg';
 import CurrencyDisplay from './components/CurrencyDisplay';
-//import TryThis from './components/TryThis';
+/*import TryThis from './components/TryThis';
+import Timer from './components/Timer';*/
 function App() {
   return (
-    <div className=" text-white text-center ">
+    <div className=" text-light text-center ">
       <AnimatedBg />
       <div className=" app-body">
         <h1 className="mt-5 py-3 ">
