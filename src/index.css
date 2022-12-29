@@ -18,7 +18,7 @@ code {
   animation: Gradient 10s ease infinite;
   background-size: 300% 100%;
   position: relative;
-  height: 150vh;
+  height: 170vh;
   width: 100%;
   overflow: hidden;
   z-index: -1;
@@ -101,7 +101,7 @@ code {
   outline: none;
   box-shadow: none;
 }
-.input-group {
+.curr {
   box-shadow: 0 10px 15px -5px rgb(15, 6, 31, 0.3);
 }
 .dropdown-menu {

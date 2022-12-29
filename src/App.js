@@ -1,8 +1,10 @@
 import AnimatedBg from './components/AnimatedBg';
 import CurrencyDisplay from './components/CurrencyDisplay';
+/*import TryThis from './components/TryThis';
+ */
 function App() {
   return (
-    <div className=" text-white text-center ">
+    <div className=" text-light text-center ">
       <AnimatedBg />
       <div className=" app-body">
         <h1 className="mt-5 py-3 ">
@@ -10,7 +12,7 @@ function App() {
         </h1>
         <CurrencyDisplay />
 
-        <div className="container mt-5">
+        <div className="container mt-1">
           <div className="row">
             <div className="col-lg-5"></div>
             <div className="col-lg-2 social">
@@ -30,6 +32,7 @@ function App() {
           </div>
         </div>
       </div>
+      {/*  <TryThis />*/}
     </div>
   );
 }

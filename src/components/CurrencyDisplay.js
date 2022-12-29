@@ -1,24 +1,94 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import CurrencyConvert from './CurrencyConvert';
 import FavCurr from './FavCurr';
+//import Timer from './Timer';
 function CurrencyDisplay() {
   /*Curr Display vars */
   const [ratesList, setRatesList] = useState([]);
+  const [oldRatesList, setOldRatesList] = useState([]);
+  const [pctChange, setPctChange] = useState([]);
   const [baseCurr, setBaseCurr] = useState('EGP');
   const [date, setDate] = useState('');
+  const [timer, setTimer] = useState(5);
   /*Curr Convert vars */
   const [amount1, setAmount1] = useState(1);
   const [currency1, setCurr1] = useState('USD');
   const [amount2, setAmount2] = useState(1);
   const [currency2, setCurr2] = useState('EGP');
   const [xRates, setXR] = useState([]);
-  /*Fav Curr vars*/
-  useEffect(() => {
-    displayCurrencies('EGP');
-  }, []);
 
-  const displayCurrencies = async (base) => {
+  /*fetch data from api based on baseCurr value */
+  const displayCurrencies = useCallback(async () => {
+    const res = await axios.get(
+      `https://api.apilayer.com/exchangerates_data/latest?base=${baseCurr}&apikey=xLIlLpdymDM3bB118on9UR89kA2wdqFQ`
+    );
+    const { rates } = res.data;
+
+    const ratesArr = [];
+    for (const [symbol, rate] of Object.entries(rates)) {
+      ratesArr.push({ symbol, rate });
+    }
+    setXR(res.data.rates);
+    setRatesList(ratesArr);
+    setDate(res.data.date);
+  }, [baseCurr]);
+
+  /*renders once at the startup*/
+  useEffect(() => {
+    displayCurrencies();
+    console.log('1st api call effect');
+  }, [displayCurrencies]);
+
+  /*renders every 5secs with the updated ratesList */
+  useEffect(() => {
+    console.log(' 2nd interval effect');
+    const interval = setInterval(() => {
+      const UpdatedR1 = ratesList.map((obj) => {
+        if (obj.rate === 1) {
+          return { symbol: obj.symbol, rate: obj.rate };
+        } else {
+          return {
+            symbol: obj.symbol,
+            rate: obj.rate + Math.random() * (0.05 - -0.02) + -0.02,
+          };
+        }
+      });
+      setOldRatesList(ratesList);
+      setRatesList(UpdatedR1);
+      const changePct = ratesList.map((obj, index) => {
+        return {
+          s: obj.symbol,
+          c: ((obj.rate - oldRatesList[index].rate) / obj.rate) * 100,
+        };
+      });
+      setPctChange(changePct);
+      console.log(pctChange);
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [ratesList, oldRatesList, pctChange]);
+
+  /*renders every sec to display a 5sec timer */
+  useEffect(() => {
+    console.log('3rd timer call effect');
+
+    if (ratesList.length === 0) {
+      console.log(ratesList);
+    } else {
+      const interval = setInterval(() => {
+        timer === 1 ? setTimer(5) : setTimer(timer - 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [timer, ratesList]);
+
+  /*async (base) => {
     const res = await axios.get(
       ` https://api.apilayer.com/exchangerates_data/latest?base=${base}&apikey=jcIiz6KRv6hYsTkQcxV4EXvcGRIIbwkI`
     );
@@ -31,7 +101,7 @@ function CurrencyDisplay() {
     setXR(res.data.rates);
     setRatesList(ratesArr);
     setDate(res.data.date);
-  };
+  };*/
   /* Currency Converter Logic */
   /* to calculate the amount2 value wrt the base currency */
   useEffect(() => {
@@ -85,7 +155,7 @@ function CurrencyDisplay() {
                 onChange={(event) => {
                   const value = event.target.value;
                   setBaseCurr(value);
-                  displayCurrencies(value);
+                  displayCurrencies();
                 }}
               >
                 {ratesList.map((curr) => (
@@ -112,8 +182,13 @@ function CurrencyDisplay() {
                 ))}
               </ul>
             </div>
-            <p>
-              <small>Last Updated: {date} </small>
+
+            <p className="pt-2">
+              {' '}
+              Last Update : {date} In{' '}
+              <span class="badge bg-light text-dark rounded-circle">
+                {timer}
+              </span>
             </p>
           </div>
           <div className="col-lg-4 col-md-2"> </div>
