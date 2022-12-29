@@ -6,6 +6,8 @@ import FavCurr from './FavCurr';
 function CurrencyDisplay() {
   /*Curr Display vars */
   const [ratesList, setRatesList] = useState([]);
+  const [oldRatesList, setOldRatesList] = useState([]);
+  const [pctChange, setPctChange] = useState([]);
   const [baseCurr, setBaseCurr] = useState('EGP');
   const [date, setDate] = useState('');
   const [timer, setTimer] = useState(5);
@@ -16,9 +18,10 @@ function CurrencyDisplay() {
   const [currency2, setCurr2] = useState('EGP');
   const [xRates, setXR] = useState([]);
 
+  /*fetch data from api based on baseCurr value */
   const displayCurrencies = useCallback(async () => {
     const res = await axios.get(
-      `https://api.apilayer.com/fixer/latest?base=${baseCurr}&apikey=8yAnIRDjLmmjrwTjvwkMjURWC6eJTNkw`
+      `https://api.apilayer.com/exchangerates_data/latest?base=${baseCurr}&apikey=xLIlLpdymDM3bB118on9UR89kA2wdqFQ`
     );
     const { rates } = res.data;
 
@@ -31,11 +34,13 @@ function CurrencyDisplay() {
     setDate(res.data.date);
   }, [baseCurr]);
 
+  /*renders once at the startup*/
   useEffect(() => {
     displayCurrencies();
     console.log('1st api call effect');
   }, [displayCurrencies]);
 
+  /*renders every 5secs with the updated ratesList */
   useEffect(() => {
     console.log(' 2nd interval effect');
     const interval = setInterval(() => {
@@ -45,19 +50,28 @@ function CurrencyDisplay() {
         } else {
           return {
             symbol: obj.symbol,
-            rate: obj.rate + Math.random() * (0.05 - 0.01) + 0.01,
+            rate: obj.rate + Math.random() * (0.05 - -0.02) + -0.02,
           };
         }
       });
-
+      setOldRatesList(ratesList);
       setRatesList(UpdatedR1);
-    }, 6000);
+      const changePct = ratesList.map((obj, index) => {
+        return {
+          s: obj.symbol,
+          c: ((obj.rate - oldRatesList[index].rate) / obj.rate) * 100,
+        };
+      });
+      setPctChange(changePct);
+      console.log(pctChange);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [ratesList]);
+  }, [ratesList, oldRatesList, pctChange]);
 
+  /*renders every sec to display a 5sec timer */
   useEffect(() => {
     console.log('3rd timer call effect');
 
@@ -65,7 +79,7 @@ function CurrencyDisplay() {
       console.log(ratesList);
     } else {
       const interval = setInterval(() => {
-        timer === 0 ? setTimer(5) : setTimer(timer - 1);
+        timer === 1 ? setTimer(5) : setTimer(timer - 1);
       }, 1000);
 
       return () => {

@@ -1,7 +1,7 @@
 import AnimatedBg from './components/AnimatedBg';
 import CurrencyDisplay from './components/CurrencyDisplay';
 /*import TryThis from './components/TryThis';
-import Timer from './components/Timer';*/
+ */
 function App() {
   return (
     <div className=" text-light text-center ">
@@ -12,7 +12,7 @@ function App() {
         </h1>
         <CurrencyDisplay />
 
-        <div className="container mt-5">
+        <div className="container mt-1">
           <div className="row">
             <div className="col-lg-5"></div>
             <div className="col-lg-2 social">
