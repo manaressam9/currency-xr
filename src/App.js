@@ -1,7 +1,6 @@
 import AnimatedBg from './components/AnimatedBg';
 import CurrencyDisplay from './components/CurrencyDisplay';
-/*import TryThis from './components/TryThis';
- */
+
 function App() {
   return (
     <div className=" text-light text-center ">
@@ -17,22 +16,21 @@ function App() {
             <div className="col-lg-5"></div>
             <div className="col-lg-2 social">
               <a href="https://www.linkedin.com/in/manar-eldredy-909/">
-                <i class="bi bi-linkedin text-primary"></i>
+                <i className="bi bi-linkedin text-primary"></i>
               </a>
               <a href="https://github.com/manaressam9/currency-xr">
                 {' '}
-                <i class="bi bi-github text-dark"></i>
+                <i className="bi bi-github text-dark"></i>
               </a>
             </div>
             <div className="col-lg-5"></div>
             <small className="mt-3 ">
-              2022 <i class="bi bi-c-circle text-light"></i> Currency-XR
+              2022 <i className="bi bi-c-circle text-light"></i> Currency-XR
               Converter
             </small>
           </div>
         </div>
       </div>
-      {/*  <TryThis />*/}
     </div>
   );
 }

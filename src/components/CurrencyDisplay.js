@@ -1,16 +1,24 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import CurrencyConvert from './CurrencyConvert';
-import FavCurr from './FavCurr';
-//import Timer from './Timer';
+import { Rates, oldRates, oldUpdate, oldPct, Symbols } from '../Rates';
+//import FavCurr from './FavCurr';
 function CurrencyDisplay() {
   /*Curr Display vars */
-  const [ratesList, setRatesList] = useState([]);
-  const [oldRatesList, setOldRatesList] = useState([]);
-  const [pctChange, setPctChange] = useState([]);
+  const [ratesList, setRatesList] = useState(Rates);
+  const [oldRatesList, setOldRatesList] = useState(oldRates);
+  const [pctChange, setPctChange] = useState(oldPct);
+  const [updatedData, setUpdatedData] = useState(oldUpdate);
   const [baseCurr, setBaseCurr] = useState('EGP');
+  const [symbols, setSymbols] = useState(Symbols);
   const [date, setDate] = useState('');
   const [timer, setTimer] = useState(5);
+  /*Fav List vars */
+  const [row1, setRow1] = useState(124);
+  const [row2, setRow2] = useState(46);
+  const [row3, setRow3] = useState(0);
+  const [row4, setRow4] = useState(150);
+  const [row5, setRow5] = useState(73);
   /*Curr Convert vars */
   const [amount1, setAmount1] = useState(1);
   const [currency1, setCurr1] = useState('USD');
@@ -21,7 +29,7 @@ function CurrencyDisplay() {
   /*fetch data from api based on baseCurr value */
   const displayCurrencies = useCallback(async () => {
     const res = await axios.get(
-      `https://api.apilayer.com/exchangerates_data/latest?base=${baseCurr}&apikey=xLIlLpdymDM3bB118on9UR89kA2wdqFQ`
+      `https://api.apilayer.com/fixer/latest?base=${baseCurr}&apikey=BW7DTrt6awxgkEfOwt49R2rgXNUALOKG`
     );
     const { rates } = res.data;
 
@@ -31,12 +39,23 @@ function CurrencyDisplay() {
     }
     setXR(res.data.rates);
     setRatesList(ratesArr);
+    //setOldRatesList(ratesArr);
     setDate(res.data.date);
   }, [baseCurr]);
+
+  /*fetch data from symbols endpoint
+  const displaySymbols = useCallback(async () => {
+    const res = await axios.get(
+      `https://api.apilayer.com/fixer/symbols?&apikey=BW7DTrt6awxgkEfOwt49R2rgXNUALOKG`
+    );
+
+    setSymbols(res.data.symbols);
+  }, []); */
 
   /*renders once at the startup*/
   useEffect(() => {
     displayCurrencies();
+    // displaySymbols();
     console.log('1st api call effect');
   }, [displayCurrencies]);
 
@@ -45,7 +64,7 @@ function CurrencyDisplay() {
     console.log(' 2nd interval effect');
     const interval = setInterval(() => {
       const UpdatedR1 = ratesList.map((obj) => {
-        if (obj.rate === 1) {
+        if (obj.rate === 1 && obj.symbol === baseCurr) {
           return { symbol: obj.symbol, rate: obj.rate };
         } else {
           return {
@@ -56,20 +75,39 @@ function CurrencyDisplay() {
       });
       setOldRatesList(ratesList);
       setRatesList(UpdatedR1);
-      const changePct = ratesList.map((obj, index) => {
-        return {
-          s: obj.symbol,
-          c: ((obj.rate - oldRatesList[index].rate) / obj.rate) * 100,
-        };
-      });
-      setPctChange(changePct);
-      console.log(pctChange);
     }, 5000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [ratesList, oldRatesList, pctChange]);
+  }, [ratesList, baseCurr]);
+
+  /* pctchange useEffect dependant on oldrateslist and rateslist */
+  useEffect(() => {
+    const changePct = ratesList.map((obj, index) => {
+      return {
+        s: obj.symbol,
+        c: amountFormat(
+          ((obj.rate - oldRatesList[index].rate) /
+            Math.abs(oldRatesList[index].rate)) *
+            100
+        ),
+      };
+    });
+    setPctChange(changePct);
+  }, [ratesList, oldRatesList]);
+
+  /* updateddata useEffect dependant on pctchange */
+  useEffect(() => {
+    const updatedD = pctChange.map((obj, index) => {
+      return {
+        symbol: ratesList[index].symbol,
+        rate: ratesList[index].rate,
+        change: obj.c,
+      };
+    });
+    setUpdatedData(updatedD);
+  }, [ratesList, pctChange]);
 
   /*renders every sec to display a 5sec timer */
   useEffect(() => {
@@ -88,20 +126,6 @@ function CurrencyDisplay() {
     }
   }, [timer, ratesList]);
 
-  /*async (base) => {
-    const res = await axios.get(
-      ` https://api.apilayer.com/exchangerates_data/latest?base=${base}&apikey=jcIiz6KRv6hYsTkQcxV4EXvcGRIIbwkI`
-    );
-    const { rates } = res.data;
-
-    const ratesArr = [];
-    for (const [symbol, rate] of Object.entries(rates)) {
-      ratesArr.push({ symbol, rate });
-    }
-    setXR(res.data.rates);
-    setRatesList(ratesArr);
-    setDate(res.data.date);
-  };*/
   /* Currency Converter Logic */
   /* to calculate the amount2 value wrt the base currency */
   useEffect(() => {
@@ -110,7 +134,7 @@ function CurrencyDisplay() {
   }, [xRates]);
   /* this function to format the amount number to a fixed-point notation */
   const amountFormat = (amount) => {
-    return amount.toFixed(2);
+    return amount.toFixed(4);
   };
   /* handling change in amount1 input element to change amount2*/
   const amount1Handler = (amount1) => {
@@ -186,7 +210,7 @@ function CurrencyDisplay() {
             <p className="pt-2">
               {' '}
               Last Update : {date} In{' '}
-              <span class="badge bg-light text-dark rounded-circle">
+              <span className="badge bg-light text-dark rounded-circle">
                 {timer}
               </span>
             </p>
@@ -220,8 +244,276 @@ function CurrencyDisplay() {
           <div className="col-lg-3 col-md-8 "></div>
         </div>
       </div>
-      {/* Favourite Curr list*/}
-      <FavCurr favCurr={ratesList} />
+      {/* Favourite Curr list
+      <FavCurr favCurr={ratesList} />*/}
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <h5>
+            <i className="bi bi-star-fill text-warning"></i> Favourite Currency
+            List
+          </h5>
+          <div className="col-12">
+            <div
+              className="table-responsive table-scroll rounded-3 bg-light shadow-2-strong"
+              data-mdb-perfect-scrollbar="true"
+              style={{ position: 'relative', height: '320px' }}
+            >
+              <table className="table table-borderless rounded-3 mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">Currency</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Change(5s)</th>
+                    <th scope="col">Edit Currency</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/*1st row */}
+                  <tr key={updatedData[row1].symbol}>
+                    <th scope="row">
+                      {updatedData[row1].symbol} - {symbols[row1].value}
+                    </th>
+                    <td>{updatedData[row1].rate}</td>
+                    <td
+                      className={
+                        updatedData[row1].change > 0
+                          ? 'text-success'
+                          : updatedData[row1].change < 0
+                          ? 'text-danger'
+                          : 'text-dark'
+                      }
+                    >
+                      <i
+                        className={
+                          updatedData[row1].change > 0
+                            ? 'bi bi-arrow-up-short text-success'
+                            : updatedData[row1].change < 0
+                            ? 'bi bi-arrow-down-short text-danger'
+                            : 'text-dark'
+                        }
+                      ></i>{' '}
+                      {updatedData[row1].change} %{' '}
+                    </td>
+                    <td>
+                      <select
+                        className="form-select "
+                        aria-label="display all currencies"
+                        // value={baseCurr}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          const x = oldRatesList.findIndex(
+                            (obj) => obj.symbol === value
+                          );
+                          setRow1(x);
+                        }}
+                      >
+                        <option value="change">change</option>
+                        {ratesList.map((curr, index) => (
+                          <option key={curr.symbol} value={curr.symbol}>
+                            {curr.symbol}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                  {/*2nd row */}
+                  <tr key={updatedData[row2].symbol}>
+                    <th scope="row">
+                      {updatedData[row2].symbol} - {symbols[row2].value}
+                    </th>
+                    <td>{updatedData[row2].rate}</td>
+                    <td
+                      className={
+                        updatedData[row2].change > 0
+                          ? 'text-success'
+                          : updatedData[row2].change < 0
+                          ? 'text-danger'
+                          : 'text-dark'
+                      }
+                    >
+                      <i
+                        className={
+                          updatedData[row2].change > 0
+                            ? 'bi bi-arrow-up-short text-success'
+                            : updatedData[row2].change < 0
+                            ? 'bi bi-arrow-down-short text-danger'
+                            : 'text-dark'
+                        }
+                      ></i>{' '}
+                      {updatedData[row2].change} %{' '}
+                    </td>
+                    <td>
+                      <select
+                        className="form-select "
+                        aria-label="display all currencies"
+                        //value={baseCurr}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          const x = oldRatesList.findIndex(
+                            (obj) => obj.symbol === value
+                          );
+                          setRow2(x);
+                        }}
+                      >
+                        <option value="change">change</option>
+                        {ratesList.map((curr, index) => (
+                          <option key={curr.symbol} value={curr.symbol}>
+                            {curr.symbol}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                  {/*3rd row */}
+                  <tr key={updatedData[row3].symbol}>
+                    <th scope="row">
+                      {updatedData[row3].symbol} - {symbols[row3].value}
+                    </th>
+                    <td>{updatedData[row3].rate}</td>
+                    <td
+                      className={
+                        updatedData[row3].change > 0
+                          ? 'text-success'
+                          : updatedData[row3].change < 0
+                          ? 'text-danger'
+                          : 'text-dark'
+                      }
+                    >
+                      <i
+                        className={
+                          updatedData[row3].change > 0
+                            ? 'bi bi-arrow-up-short text-success'
+                            : updatedData[row3].change < 0
+                            ? 'bi bi-arrow-down-short text-danger'
+                            : 'text-dark'
+                        }
+                      ></i>{' '}
+                      {updatedData[row3].change} %{' '}
+                    </td>
+                    <td>
+                      <select
+                        className="form-select "
+                        aria-label="display all currencies"
+                        // value="change"
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          const x = oldRatesList.findIndex(
+                            (obj) => obj.symbol === value
+                          );
+                          setRow3(x);
+                        }}
+                      >
+                        <option value="change">change</option>
+                        {ratesList.map((curr, index) => (
+                          <option key={curr.symbol} value={curr.symbol}>
+                            {curr.symbol}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                  {/*4th row */}
+                  <tr key={updatedData[row4].symbol}>
+                    <th scope="row">
+                      {updatedData[row4].symbol} - {symbols[row4].value}
+                    </th>
+                    <td>{updatedData[row4].rate}</td>
+                    <td
+                      className={
+                        updatedData[row4].change > 0
+                          ? 'text-success'
+                          : updatedData[row4].change < 0
+                          ? 'text-danger'
+                          : 'text-dark'
+                      }
+                    >
+                      <i
+                        className={
+                          updatedData[row4].change > 0
+                            ? 'bi bi-arrow-up-short text-success'
+                            : updatedData[row4].change < 0
+                            ? 'bi bi-arrow-down-short text-danger'
+                            : 'text-dark'
+                        }
+                      ></i>{' '}
+                      {updatedData[row4].change} %{' '}
+                    </td>
+                    <td>
+                      <select
+                        className="form-select "
+                        aria-label="display all currencies"
+                        // value="change"
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          const x = oldRatesList.findIndex(
+                            (obj) => obj.symbol === value
+                          );
+                          setRow4(x);
+                        }}
+                      >
+                        <option value="change">change</option>
+                        {ratesList.map((curr, index) => (
+                          <option key={curr.symbol} value={curr.symbol}>
+                            {curr.symbol}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                  {/*5th row */}
+                  <tr key={updatedData[row5].symbol}>
+                    <th scope="row">
+                      {updatedData[row5].symbol} - {symbols[row5].value}
+                    </th>
+                    <td>{updatedData[row5].rate}</td>
+                    <td
+                      className={
+                        updatedData[row5].change > 0
+                          ? 'text-success'
+                          : updatedData[row5].change < 0
+                          ? 'text-danger'
+                          : 'text-dark'
+                      }
+                    >
+                      <i
+                        className={
+                          updatedData[row5].change > 0
+                            ? 'bi bi-arrow-up-short text-success'
+                            : updatedData[row5].change < 0
+                            ? 'bi bi-arrow-down-short text-danger'
+                            : 'text-dark'
+                        }
+                      ></i>{' '}
+                      {updatedData[row5].change} %{' '}
+                    </td>
+                    <td>
+                      <select
+                        className="form-select "
+                        aria-label="display all currencies"
+                        // value="change"
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          const x = oldRatesList.findIndex(
+                            (obj) => obj.symbol === value
+                          );
+                          setRow5(x);
+                        }}
+                      >
+                        <option value="change">change</option>
+                        {ratesList.map((curr, index) => (
+                          <option key={curr.symbol} value={curr.symbol}>
+                            {curr.symbol}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
